@@ -1,0 +1,126 @@
+Implement a working payment flow for storage plan purchases in Kiko using Pesapal.
+
+Current Situation
+
+The storage dashboard and storage plans already exist, but when the user clicks "Choose Plan" nothing happens.
+
+Goal
+
+When a user clicks "Choose Plan", the system must open a payment checkout page and allow the user to complete payment. After successful payment, the user’s storage plan must activate automatically.
+
+1. Plan Selection
+
+When a user clicks "Choose Plan":
+
+Starter Plan
+10 GB storage
+500 KES per month
+
+Creator Plan
+50 GB storage
+1500 KES per month
+
+Pro Plan
+200 GB storage
+3000 KES per month
+
+The system must open a payment checkout screen.
+
+2. Payment Checkout Page
+
+Display the selected plan details:
+
+Plan name
+Storage amount
+Price per month
+
+Example:
+
+Plan: Creator
+Storage: 50 GB
+Price: KES 1500 / month
+
+Provide payment options:
+
+Pay with Card
+Pay with M-Pesa (if available through Pesapal)
+
+Buttons:
+
+Proceed to Payment
+Cancel
+
+3. Payment Processing
+
+When the user proceeds with payment:
+
+Send payment request to Pesapal including:
+
+user_id
+plan_name
+plan_price
+currency = KES
+transaction_reference
+callback_url
+
+Generate a unique transaction reference for every payment.
+
+4. Payment Confirmation
+
+After payment is processed, Pesapal will send a payment confirmation response or webhook.
+
+The backend must verify the transaction and confirm:
+
+payment_status = successful
+correct amount paid
+
+Only after verification should the storage plan activate.
+
+5. Activate Storage Plan
+
+After successful payment:
+
+Update the user account with:
+
+plan_name
+storage_limit
+subscription_status = active
+billing_date = current date
+next_billing_date = +30 days
+
+Plan limits:
+
+Starter → 10 GB
+Creator → 50 GB
+Pro → 200 GB
+
+6. Update Storage Dashboard
+
+After activation:
+
+The storage meter must update immediately.
+
+Example:
+
+Storage
+0 GB / 50 GB
+
+7. Payment Failure Handling
+
+If payment fails or is cancelled:
+
+Show a message:
+
+"Payment failed. Please try again."
+
+Do not activate the storage plan.
+
+8. User Experience
+
+The payment flow must be smooth and simple.
+
+Users should be able to:
+
+Choose a plan
+Complete payment
+Return to the storage dashboard with the new plan active.

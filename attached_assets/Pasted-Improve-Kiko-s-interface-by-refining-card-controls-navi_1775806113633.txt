@@ -1,0 +1,144 @@
+Improve Kiko’s interface by refining card controls, navigation behavior, bookmarking, and implementing fullscreen story playback.
+
+1. Bookmark Placement
+
+Bookmarks must not interfere with card content.
+
+Main Cards:
+
+* Place the bookmark icon in the top-right corner of the card.
+* Keep the icon small and subtle.
+
+When clicked show options:
+
+Save this moment
+Save entire story
+Cancel
+
+Inner Cards:
+
+* Use the same bookmark icon in the top-right corner.
+* Keep it minimal so it does not distract from the story.
+
+2. Bookmark Storage
+
+Bookmarks should be accessible through the profile menu.
+
+Profile menu structure:
+
+My Timeline
+Bookmarks
+Open Editor
+Log Out
+
+The bookmark page must contain:
+
+Saved Stories
+Saved Moments
+
+Saved Stories:
+show bookmarked creator timelines.
+
+Saved Moments:
+show bookmarked cards.
+
+Navigation behavior:
+
+If a user opens a saved story:
+navigate directly to that creator’s timeline.
+
+If a user opens a saved moment:
+navigate to the correct timeline and automatically open the saved card.
+
+3. Play Button Layout
+
+Apply consistent layout to main cards and inner cards:
+
+Card content
+Play button (centered)
+Progress indicators
+Timeline counter
+
+Spacing rules:
+
+Card bottom → Play button: 28px
+Play button → Progress indicators: 16px
+Progress indicators → counter: 8px
+
+Progress indicators must never touch the card edges.
+
+4. Fullscreen Story Mode
+
+When the play button is pressed:
+
+* the card expands into fullscreen mode
+* background UI fades out
+* only the story content becomes visible
+
+In fullscreen mode:
+
+* story cards fill the entire screen
+* autoplay begins automatically
+
+5. Story Mode Controls
+
+The play button must convert into a pause button.
+
+Controls visible in fullscreen:
+
+Pause / Play button
+Close (X) button
+
+Pause:
+stops autoplay and card transitions.
+
+Play:
+resumes autoplay.
+
+Close (X):
+exits fullscreen mode and returns the user to normal timeline view.
+
+6. Autoplay Behavior
+
+In fullscreen story mode:
+
+* cards automatically advance to the next card
+* transitions must be smooth and cinematic.
+
+7. Remove Auto Timeline Scrolling
+
+Timeline changes must only occur when the user deliberately scrolls vertically.
+
+Timeline switching must NOT be triggered by:
+
+opening a card
+closing a card
+navigating inner cards
+pressing back
+clicking play
+watching autoplay
+
+8. Fix Back Navigation
+
+Back navigation must stay inside the current timeline.
+
+Inner card → Back → Main card
+Main card → Back → Timeline view
+
+Back navigation must never trigger timeline switching.
+
+9. Timeline Isolation
+
+Each timeline must function independently.
+
+Interactions inside one timeline must never affect other timelines.
+
+Timeline switching must only occur via vertical scrolling.
+
+10. Device Consistency
+
+All behaviors must work consistently across:
+
+mobile
+tablet
+desktop

@@ -1,0 +1,211 @@
+Improve Kiko’s interface by fixing control layout, navigation behavior, and implementing an interactive onboarding animation that teaches users how to use the platform.
+
+---
+
+1. Fix Play Button and Progress Indicators (Main Cards + Inner Cards)
+
+Apply the same layout structure to both main cards and inner cards.
+
+Structure:
+
+* Card content
+* Play button (centered)
+* Progress indicators
+* Timeline counter (example: 2 / 2)
+
+Spacing rules:
+
+* Card bottom → Play button: 28px
+* Play button → Progress indicators: 16px
+* Progress indicators → counter: 8px
+
+Requirements:
+
+* Progress indicators must never touch the card edges.
+* Progress indicators must sit on their own row below the play button.
+* Everything should remain horizontally centered.
+* Apply this layout consistently to both main cards and inner cards.
+
+---
+
+2. Remove Auto Timeline Scrolling
+
+Remove all automatic timeline switching.
+
+Timeline changes must ONLY occur when the user intentionally performs a vertical scroll gesture.
+
+Timeline switching must NOT be triggered by:
+
+* opening a card
+* closing a card
+* navigating inner cards
+* pressing the back arrow
+* clicking the play button
+* any UI interaction inside a timeline
+
+The user must have full control over when timelines change.
+
+---
+
+3. Fix Back Navigation
+
+Back navigation must remain inside the current timeline and never trigger a timeline change.
+
+Correct navigation structure:
+
+Timeline
+→ Main Card
+→ Inner Cards
+
+Expected behavior:
+
+* Inner Card → Back → Main Card
+* Main Card → Back → Timeline View
+
+Pressing the back arrow must never switch to another timeline.
+
+---
+
+4. Timeline Isolation
+
+Each timeline must function as an independent container.
+
+Interactions inside one timeline must never affect or trigger another timeline.
+
+Example:
+
+Timeline A
+
+* Main cards
+* Inner cards
+
+Timeline B
+
+* Main cards
+* Inner cards
+
+Actions performed inside Timeline A must never trigger Timeline B.
+
+Timeline switching should only occur when the user deliberately scrolls vertically.
+
+---
+
+5. Maintain Consistent Behavior Across Devices
+
+All interaction logic must behave consistently across:
+
+* mobile
+* tablet
+* desktop
+
+Gestures such as scroll, double tap, and navigation must work correctly on all devices.
+
+---
+
+6. Implement Interactive Onboarding Animation (Login / First Visit)
+
+Replace the current fast login animation with a slower, interactive onboarding sequence that teaches users how to use Kiko.
+
+The onboarding must guide users through the core gestures of the platform.
+
+Step 1 — Introduction
+
+Display a short introduction overlay explaining the platform.
+
+Example text:
+
+"Welcome to Kiko
+Kiko is a cinematic storytelling platform where creators share stories through visual timelines.
+Explore creators, open story cards, and discover moments."
+
+Buttons:
+
+Start Exploring
+Skip
+
+---
+
+Step 2 — Teach Scrolling (Explore Creators)
+
+Show overlay text:
+
+"Scroll to explore creators."
+
+Add a subtle animation:
+
+* card slightly slides upward
+* arrow indicator appears
+
+The system waits for the user to scroll vertically.
+
+Once the user scrolls, the onboarding moves to the next step.
+
+---
+
+Step 3 — Teach Opening a Card
+
+Show overlay text:
+
+"Double tap a card to enter a story."
+
+Animation:
+
+* card gently pulses
+* double-tap finger indicator appears
+
+The user must double tap a card.
+
+After the action is performed, proceed to the next step.
+
+---
+
+Step 4 — Teach Inner Story Navigation
+
+Show overlay text:
+
+"Swipe through moments inside a story."
+
+Demonstrate the motion with a subtle swipe animation.
+
+Allow the user to swipe before proceeding.
+
+---
+
+Step 5 — Finish
+
+Show final message:
+
+"You’re ready to explore Kiko."
+
+Buttons:
+
+Continue
+Explore
+
+---
+
+7. Store Onboarding in Help Icon
+
+The onboarding tutorial must be accessible anytime.
+
+When the user clicks the question mark icon at the top of the page:
+
+* replay the full onboarding tutorial
+* allow the user to follow the steps again
+
+---
+
+8. Add Skip Option
+
+Every onboarding step must include a visible "Skip" button.
+
+If the user presses Skip:
+
+* the onboarding immediately closes
+* the user continues using the platform normally.
+
+---
+
+Goal
+
+These improvements should make the interface feel more premium, eliminate accidental timeline switching, create clear navigation hierarchy, and teach users how to interact with Kiko through guided motion and interaction.

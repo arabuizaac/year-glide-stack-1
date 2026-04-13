@@ -1,0 +1,4 @@
+project_id = "igmwfbmxsivffiemhjby"
+
+[functions.pesapal-payment]
+verify_jwt = false
