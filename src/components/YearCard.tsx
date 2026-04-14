@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +29,9 @@ export const YearCard = ({
   isBookmarked = false,
 }: YearCardProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const lastTap = useRef(0);
+  const isCenter = position === "center";
 
   const handleTap = useCallback(() => {
     const now = Date.now();
@@ -41,22 +42,28 @@ export const YearCard = ({
       lastTap.current = now;
       setTimeout(() => {
         if (lastTap.current !== 0) {
-          // single tap — no-op
+          // single tap — no-op here, handled by parent
         }
       }, 300);
     }
   }, [onDoubleClick]);
 
-  const toggleVideo = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
+  // Play when center, pause otherwise
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    if (isCenter) {
+      const playPromise = vid.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay blocked — video stays paused, no UI error shown
+        });
+      }
     } else {
-      videoRef.current.play();
+      vid.pause();
     }
-    setIsPlaying(!isPlaying);
-  }, [isPlaying]);
+  }, [isCenter]);
 
   const getPositionStyles = () => {
     switch (position) {
@@ -89,16 +96,31 @@ export const YearCard = ({
       transition={{ type: "spring", stiffness: 300, damping: 30, mass: 0.8 }}
       onClick={position === "center" ? handleTap : onClick}
     >
-      {/* Media */}
-      {mediaType === "video" ? (
+      {/* ── Media layer ─────────────────────────────────────────────────────── */}
+      {mediaType === "video" && !videoError ? (
         <video
           ref={videoRef}
           src={imageUrl}
           className="absolute inset-0 w-full h-full object-cover"
-          loop muted playsInline preload="metadata"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload={isCenter ? "auto" : "metadata"}
+          onError={() => setVideoError(true)}
+          style={{ display: "block" }}
         />
       ) : (
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${imageUrl})` }} />
+        /* Image fallback — also shown when videoError === true */
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: videoError
+              ? undefined
+              : `url(${imageUrl})`,
+            backgroundColor: videoError ? "#111" : undefined,
+          }}
+        />
       )}
 
       {/* Bottom gradient */}
@@ -148,25 +170,6 @@ export const YearCard = ({
             {year}
           </h2>
         </div>
-      )}
-
-      {/* Video play overlay */}
-      {mediaType === "video" && position === "center" && (
-        <button
-          onClick={toggleVideo}
-          className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors"
-        >
-          {isPlaying ? (
-            <div className="flex gap-1">
-              <div className="w-1 h-4 bg-white rounded-full" />
-              <div className="w-1 h-4 bg-white rounded-full" />
-            </div>
-          ) : (
-            <svg className="w-5 h-5 text-white ml-0.5" fill="white" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
-        </button>
       )}
     </motion.div>
   );

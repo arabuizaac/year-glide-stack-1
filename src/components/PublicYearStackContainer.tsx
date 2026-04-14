@@ -437,10 +437,11 @@ export const PublicYearStackContainer = () => {
                 const position = getPosition(index);
                 if (position === "hidden") return null;
 
-                const imageUrl =
-                  year.background_type === "image" && year.background_value
-                    ? year.background_value
-                    : "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=1000&fit=crop&crop=entropy&auto=format&q=90";
+                const isVideo =
+                  year.background_type === "video" && !!year.background_value;
+                const mediaUrl = year.background_value
+                  ? year.background_value
+                  : "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=1000&fit=crop&crop=entropy&auto=format&q=90";
 
                 const isBookmarked = !!(selectedProfile && isStorySaved(selectedProfile.user_id));
                 return (
@@ -454,7 +455,8 @@ export const PublicYearStackContainer = () => {
                       }
                     }}
                     onDoubleClick={() => handleCardDoubleClick(year.id)}
-                    imageUrl={imageUrl}
+                    imageUrl={mediaUrl}
+                    mediaType={isVideo ? "video" : "image"}
                     onSwipeOut={(d) => goTo(d)}
                     onBookmarkClick={handleBookmarkClick}
                     isBookmarked={isBookmarked}
