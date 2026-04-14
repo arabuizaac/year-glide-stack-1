@@ -131,7 +131,7 @@
   /* Lock page from scrolling - prevent overscroll and bounce */
   html, body {
     @apply text-foreground;
-    background: #000;
+    background: transparent;
     overflow: hidden;
     overscroll-behavior: none;
     position: fixed;
@@ -151,6 +151,6 @@
     top: 0;
     left: 0;
     overscroll-behavior: none;
-    background: #000;
+    background: transparent;
   }
 }

@@ -275,7 +275,7 @@ export const PublicYearStackContainer = () => {
 
   if (isLoading) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center" style={{ background: '#000' }}>
+      <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
           className="text-white/80 text-lg"
           animate={{ opacity: [0.5, 1, 0.5] }}
@@ -289,7 +289,7 @@ export const PublicYearStackContainer = () => {
 
   if (isDemo) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden" style={{ background: '#000' }}>
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
         <div className="relative z-10 text-center text-white/80 px-6">
           <h2 className="text-2xl font-semibold mb-3">No Account Created</h2>
@@ -302,7 +302,7 @@ export const PublicYearStackContainer = () => {
   }
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: '#000' }}>
+    <div className="absolute inset-0 overflow-hidden">
       {/* Background overlay — double-click handled globally in useEffect */}
       <div className="absolute inset-0 bg-black/40 z-[1]" />
 
