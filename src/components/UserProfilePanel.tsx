@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, X, Mail, Globe, MapPin, Briefcase, MessageSquare, 
-  Instagram, Facebook, Phone, Plus, LogIn, UserPlus, Layout, Edit3, LogOut
+  Instagram, Facebook, Phone, Plus, LogIn, UserPlus, Layout, Edit3, LogOut, Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -396,6 +396,14 @@ export const UserProfilePanel = ({ profile, isDemo, onOpenChange }: UserProfileP
                             Open editor
                           </button>
                           <button
+                            onClick={() => { setIsOpen(false); navigate('/bookmarks'); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-sm"
+                            data-testid="link-bookmarks"
+                          >
+                            <Bookmark className="w-4 h-4" />
+                            Bookmarks
+                          </button>
+                          <button
                             onClick={async () => {
                               await supabase.auth.signOut();
                               setIsOpen(false);
@@ -416,6 +424,14 @@ export const UserProfilePanel = ({ profile, isDemo, onOpenChange }: UserProfileP
                           >
                             <Plus className="w-4 h-4" />
                             Create your own timeline
+                          </button>
+                          <button
+                            onClick={() => { setIsOpen(false); navigate('/bookmarks'); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-sm"
+                            data-testid="link-bookmarks"
+                          >
+                            <Bookmark className="w-4 h-4" />
+                            Bookmarks
                           </button>
                           <button
                             onClick={() => { setIsOpen(false); navigate('/auth'); }}

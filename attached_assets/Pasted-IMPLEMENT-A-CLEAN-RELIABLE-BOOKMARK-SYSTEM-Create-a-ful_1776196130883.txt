@@ -1,0 +1,123 @@
+IMPLEMENT A CLEAN, RELIABLE BOOKMARK SYSTEM
+
+Create a fully functional bookmark system that allows users to save timelines and individual cards, access them from the profile panel, and navigate directly to saved content.
+
+1. Bookmark UI Placement
+Main Cards
+Add bookmark icon at top-right corner
+Slight opacity (0.8), becomes solid on hover/tap
+Must NOT overlap text or feel crowded
+Inner Cards
+Smaller bookmark icon
+Positioned top-right or subtle corner
+Maintain clean visual hierarchy
+2. Bookmark Interaction
+
+On tap:
+
+Show quick action sheet:
+Save this story
+Save this moment
+Cancel
+
+Map:
+
+“Save this story” → saves entire timeline
+“Save this moment” → saves specific card
+3. Bookmark Data Structure
+
+Each bookmark must store:
+
+user_id
+timeline_id
+card_id (nullable)
+timeline_title
+card_title (if applicable)
+preview_image
+timestamp
+4. Save Behavior
+Instant save (no delay)
+Show subtle feedback:
+icon fills
+small “Saved” toast (fade out)
+5. Access Bookmarks (Profile Panel)
+
+Inside profile panel, add section at bottom:
+
+────────────
+Bookmarks
+
+When clicked → opens bookmarks view
+
+6. Bookmarks View Design
+
+Display as clean grid/list:
+
+Each item shows:
+
+preview image
+title
+creator name
+
+Sections:
+
+Saved Stories
+Saved Moments
+7. Navigation Behavior (CRITICAL)
+
+When user clicks a bookmark:
+
+If timeline saved:
+
+→ Open that timeline as main card
+
+If card saved:
+
+→ Open timeline
+→ Automatically open that specific card
+
+This must feel instant and smooth.
+
+8. Scroll Sync
+
+If opening a bookmarked card:
+
+Skip animations delay
+Directly focus on correct card
+Maintain current timeline scroll system
+9. Storage Location
+
+Store bookmarks in database (Supabase):
+
+Table: bookmarks
+
+id
+user_id
+timeline_id
+card_id
+created_at
+10. Logged-Out Behavior
+
+If user is not logged in:
+
+Tap bookmark → show:
+Save stories to revisit anytime
+
+Sign in
+Create account
+11. Performance
+Bookmark action must be instant (<100ms feedback)
+Use optimistic UI update
+12. Maintain Premium Feel
+No clutter
+No popups blocking screen
+Smooth animations only
+Everything feels integrated into storytelling
+🎯 Result After This
+
+✔ Bookmark actually works
+✔ Users can save stories OR moments
+✔ Easy access from profile
+✔ Direct jump back to content
+✔ No UI clutter
+✔ Feels like part of Kiko, not a feature

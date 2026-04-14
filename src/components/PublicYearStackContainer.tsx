@@ -1,13 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, ChevronUp, ChevronDown } from "lucide-react";
+import { Play, Pause, ChevronUp, ChevronDown, Bookmark, X, LogIn, UserPlus } from "lucide-react";
 import { YearCard } from "./YearCard";
 import { UserProfilePanel } from "./UserProfilePanel";
 import { useCreatorDiscovery } from "@/hooks/useCreatorDiscovery";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 import { useGlobalBackground } from "@/contexts/GlobalBackgroundContext";
 import { preloadYearData } from "@/lib/yearDataCache";
+import {
+  saveStory,
+  isStorySaved,
+} from "@/lib/bookmarks";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const PublicYearStackContainer = () => {
   const {
@@ -29,6 +35,39 @@ export const PublicYearStackContainer = () => {
   const [isTransitioningCreator, setIsTransitioningCreator] = useState(false);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Bookmark state
+  const [showBookmarkSheet, setShowBookmarkSheet] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [, forceBookmarkUpdate] = useState(0);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setIsLoggedIn(!!s));
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleBookmarkClick = useCallback(() => {
+    setShowBookmarkSheet(true);
+  }, []);
+
+  const handleSaveStory = useCallback(() => {
+    if (!selectedProfile || !years[currentIndex]) return;
+    const year = years[currentIndex];
+    const imageUrl = (year.background_type === "image" && year.background_value) ? year.background_value : undefined;
+    const saved = saveStory({
+      userId: selectedProfile.user_id,
+      displayName: selectedProfile.display_name || selectedProfile.username,
+      username: selectedProfile.username,
+      yearId: year.id,
+      yearName: year.name,
+      imageUrl,
+    });
+    setShowBookmarkSheet(false);
+    forceBookmarkUpdate(n => n + 1);
+    toast({ title: saved ? "Story saved" : "Already saved", description: saved ? `"${year.name}" added to your bookmarks` : "This story is already saved" });
+  }, [selectedProfile, years, currentIndex, toast]);
 
   // Drag state
   const dragStartX = useRef(0);
@@ -403,6 +442,7 @@ export const PublicYearStackContainer = () => {
                     ? year.background_value
                     : "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=1000&fit=crop&crop=entropy&auto=format&q=90";
 
+                const isBookmarked = !!(selectedProfile && isStorySaved(selectedProfile.user_id));
                 return (
                   <YearCard
                     key={year.id}
@@ -416,6 +456,8 @@ export const PublicYearStackContainer = () => {
                     onDoubleClick={() => handleCardDoubleClick(year.id)}
                     imageUrl={imageUrl}
                     onSwipeOut={(d) => goTo(d)}
+                    onBookmarkClick={handleBookmarkClick}
+                    isBookmarked={isBookmarked}
                   />
                 );
               })}
@@ -497,6 +539,104 @@ export const PublicYearStackContainer = () => {
           onOpenChange={(open) => { profileOpenRef.current = open; }}
         />
       </div>
+
+      {/* ── Bookmark action sheet ───────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {showBookmarkSheet && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowBookmarkSheet(false)}
+            />
+            {/* Sheet */}
+            <motion.div
+              className="fixed bottom-0 left-0 right-0 z-[90] px-4 pb-safe"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 400, damping: 40 }}
+            >
+              <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl rounded-b-none overflow-hidden mb-0 pb-8">
+                {/* Handle */}
+                <div className="flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 rounded-full bg-white/30" />
+                </div>
+
+                {/* Close */}
+                <button
+                  onClick={() => setShowBookmarkSheet(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <X className="w-4 h-4 text-white/70" />
+                </button>
+
+                <div className="px-6 pt-2 pb-4">
+                  <p className="text-white/40 text-xs tracking-widest uppercase text-center mb-5">Save to Bookmarks</p>
+
+                  {isLoggedIn ? (
+                    <div className="space-y-3">
+                      {/* Save story */}
+                      <button
+                        onClick={handleSaveStory}
+                        className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-[0.98] transition-all duration-200 text-left"
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                          <Bookmark className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold text-sm">Save this story</p>
+                          <p className="text-white/50 text-xs mt-0.5">Save the whole timeline to revisit later</p>
+                        </div>
+                      </button>
+
+                      {/* Cancel */}
+                      <button
+                        onClick={() => setShowBookmarkSheet(false)}
+                        className="w-full py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors text-white/50 text-sm font-medium"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    /* Logged-out: prompt sign in */
+                    <div className="space-y-3">
+                      <div className="text-center py-2 mb-1">
+                        <Bookmark className="w-8 h-8 text-white/30 mx-auto mb-3" />
+                        <p className="text-white/80 font-medium text-sm mb-1">Save stories to revisit anytime</p>
+                        <p className="text-white/40 text-xs">Sign in to keep your bookmarks</p>
+                      </div>
+                      <button
+                        onClick={() => { setShowBookmarkSheet(false); navigate('/auth'); }}
+                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 transition-colors text-white font-semibold text-sm"
+                      >
+                        <LogIn className="w-4 h-4" />
+                        Sign in
+                      </button>
+                      <button
+                        onClick={() => { setShowBookmarkSheet(false); navigate('/auth'); }}
+                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white/8 hover:bg-white/15 transition-colors text-white/70 text-sm"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                        Create account
+                      </button>
+                      <button
+                        onClick={() => setShowBookmarkSheet(false)}
+                        className="w-full py-3 text-white/30 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
