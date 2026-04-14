@@ -130,7 +130,8 @@
 
   /* Lock page from scrolling - prevent overscroll and bounce */
   html, body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: #000;
     overflow: hidden;
     overscroll-behavior: none;
     position: fixed;
@@ -138,13 +139,18 @@
     height: 100dvh;
     touch-action: none;
     -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
   }
   
   #root {
-    width: 100%;
+    width: 100vw;
     height: 100dvh;
     overflow: hidden;
     position: fixed;
+    top: 0;
+    left: 0;
     overscroll-behavior: none;
+    background: #000;
   }
 }

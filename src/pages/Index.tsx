@@ -11,7 +11,7 @@ const Index = () => {
   const { isImmersiveMode } = useImmersiveMode();
 
   return (
-    <div className="relative h-[100dvh] overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden" style={{ background: '#000' }}>
       <Onboarding
         forcePlay={showOnboarding}
         onComplete={() => setShowOnboarding(false)}

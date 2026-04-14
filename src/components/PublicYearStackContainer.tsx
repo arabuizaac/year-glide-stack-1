@@ -275,7 +275,7 @@ export const PublicYearStackContainer = () => {
 
   if (isLoading) {
     return (
-      <div className="relative h-[100dvh] flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center" style={{ background: '#000' }}>
         <motion.div
           className="text-white/80 text-lg"
           animate={{ opacity: [0.5, 1, 0.5] }}
@@ -289,7 +289,7 @@ export const PublicYearStackContainer = () => {
 
   if (isDemo) {
     return (
-      <div className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden" style={{ background: '#000' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
         <div className="relative z-10 text-center text-white/80 px-6">
           <h2 className="text-2xl font-semibold mb-3">No Account Created</h2>
@@ -302,7 +302,7 @@ export const PublicYearStackContainer = () => {
   }
 
   return (
-    <div className="relative h-[100dvh] overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden" style={{ background: '#000' }}>
       {/* Background overlay — double-click handled globally in useEffect */}
       <div className="absolute inset-0 bg-black/40 z-[1]" />
 
@@ -314,24 +314,19 @@ export const PublicYearStackContainer = () => {
         <motion.div
           key={currentCreatorIndex}
           className="absolute inset-0 z-10"
+          style={{ willChange: "transform", backfaceVisibility: "hidden" }}
           custom={transitionDirectionRef.current}
           variants={{
             enter: (dir: "up" | "down") => ({
-              y: dir === "up" ? "100%" : "-100%",
-              opacity: 0,
-              scale: 0.96,
+              y: dir === "up" ? "101%" : "-101%",
             }),
             visible: {
               y: 0,
-              opacity: 1,
-              scale: 1,
               transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] },
             },
             exit: (dir: "up" | "down") => ({
-              y: dir === "up" ? "-18%" : "18%",
-              opacity: 0,
-              scale: 0.97,
-              transition: { duration: 0.35, ease: [0.55, 0, 1, 0.45] },
+              y: dir === "up" ? "-101%" : "101%",
+              transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] },
             }),
           }}
           initial="enter"

@@ -1,0 +1,115 @@
+Fix the visible top bar and ensure timelines fully cover the screen at all times with no gaps or background exposure.
+
+1. Force True Fullscreen Layout
+
+Ensure the root app container and all timelines use:
+
+height: 100vh
+width: 100vw
+
+Remove any layout that allows content to sit below the top edge.
+
+2. Remove Any Top Offset
+
+Audit and remove from ALL containers:
+
+* margin-top
+* padding-top
+* top offsets
+* safe-area spacing (unless explicitly needed)
+
+Everything must start at the absolute top of the viewport.
+
+3. Lock Timeline Positioning
+
+All timeline containers must be:
+
+position: absolute
+top: 0
+left: 0
+
+Stack timelines inside a parent container:
+
+position: relative
+overflow: hidden
+
+This ensures timelines always cover the full screen.
+
+4. Prevent Background Exposure
+
+The parent container must:
+
+* either match the timeline background exactly
+* OR never be visible
+
+Best approach:
+
+Timelines must ALWAYS overlap and cover 100% of the parent.
+
+At no point during scroll should the parent container be visible.
+
+5. Fix Transition System
+
+Use transform-based transitions only:
+
+Current timeline:
+transform: translateY(0 → -100%)
+
+Next timeline:
+transform: translateY(100% → 0)
+
+Both must exist simultaneously during transition.
+
+Do NOT remove one timeline before the next fully enters.
+
+6. Add Overscan Protection
+
+To prevent micro gaps:
+
+Use:
+
+height: 101vh
+
+OR
+
+translateY(-100.1%)
+
+This eliminates 1px gaps caused by subpixel rendering.
+
+7. Remove Any Background Color From Root
+
+Check:
+
+body
+html
+root div
+
+Set:
+
+background: black (or match timeline)
+
+Avoid light colors that show through.
+
+8. Ensure No Fixed Header Exists
+
+If any top header exists:
+
+* remove it
+* or make it position: absolute and overlay the timeline
+
+It must NOT push content down.
+
+9. Cross-Device Consistency
+
+Verify behavior on:
+
+* desktop (this is where your issue is most visible)
+* tablet
+* mobile
+
+10. Final Result
+
+* No line or bar appears at the top
+* No background is ever exposed
+* Timelines feel like one continuous surface
+* Scrolling feels seamless and premium
